@@ -1,0 +1,133 @@
+.today-view {
+    margin-bottom: var(--spacing-xl);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: var(--font-size-xl);
+    color: var(--color-text-primary);
+}
+
+.task-count {
+    background: rgba(255, 215, 0, 0.2);
+    color: var(--color-accent-primary);
+    padding: 4px 12px;
+    border-radius: var(--border-radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+}
+
+.today-progress {
+    margin-bottom: var(--spacing-md);
+}
+
+.today-progress-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-full);
+    overflow: hidden;
+}
+
+.today-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-success), #7bed9f);
+    border-radius: var(--border-radius-full);
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px rgba(0, 200, 81, 0.4);
+}
+
+.show-completed-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    user-select: none;
+}
+
+.show-completed-toggle input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-accent-primary);
+    cursor: pointer;
+}
+
+.show-completed-toggle:hover {
+    color: var(--color-text-primary);
+}
+
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-xl);
+    background: var(--color-bg-secondary);
+    border-radius: var(--border-radius-lg);
+    border: 1px dashed var(--border-color);
+}
+
+.empty-state p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-lg);
+}
+
+.today-tasks-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.draggable-task-wrapper {
+    display: flex;
+    align-items: stretch;
+    position: relative;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.draggable-task-wrapper.draggable {
+    cursor: grab;
+}
+
+.draggable-task-wrapper.draggable:active {
+    cursor: grabbing;
+}
+
+.draggable-task-wrapper.dragging {
+    opacity: 0.5;
+    transform: scale(0.98);
+}
+
+.draggable-task-wrapper.drag-over {
+    border-top: 2px solid var(--color-accent-primary);
+    margin-top: -2px;
+}
+
+.draggable-task-wrapper .task-card {
+    flex: 1;
+}
+
+.drag-handle {
+    display: flex;
+    align-items: center;
+    padding: 0 var(--spacing-sm);
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    cursor: grab;
+}
+
+.draggable-task-wrapper:hover .drag-handle {
+    opacity: 1;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}

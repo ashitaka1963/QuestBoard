@@ -1,0 +1,66 @@
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.icon-sword {
+    color: var(--color-accent-primary);
+    filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.5));
+}
+
+.icon-star {
+    color: var(--color-accent-primary);
+    filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.6));
+}
+
+.icon-scroll {
+    color: var(--color-accent-tertiary);
+}
+
+.icon-folder {
+    color: var(--color-accent-tertiary);
+}
+
+.icon-calendar {
+    color: var(--color-text-secondary);
+}
+
+.icon-check {
+    color: var(--color-bg-primary);
+}
+
+.icon-edit {
+    color: var(--color-accent-tertiary);
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.icon-edit:hover {
+    color: var(--color-accent-primary);
+    transform: scale(1.1);
+}
+
+.icon-delete {
+    color: var(--color-text-muted);
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.icon-delete:hover {
+    color: var(--color-danger);
+    transform: scale(1.1);
+}
+
+/* .icon-plus removed to inherit color */
+
+.icon-drag {
+    color: var(--color-text-muted);
+}
+
+.icon-trophy {
+    color: var(--color-accent-primary);
+    filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.4));
+}
+
+.icon-inbox {
+    color: var(--color-accent-secondary);
+}

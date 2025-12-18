@@ -1,0 +1,70 @@
+.kanban-board {
+    margin-top: var(--spacing-xl);
+}
+
+.kanban-columns {
+    display: flex;
+    gap: var(--spacing-md);
+    overflow-x: auto;
+    padding-bottom: var(--spacing-md);
+    scroll-snap-type: x mandatory;
+}
+
+.kanban-column {
+    flex: 0 0 300px;
+    min-width: 280px;
+    background: var(--color-bg-secondary);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+    padding: var(--spacing-md);
+    scroll-snap-align: start;
+    transition: border-color 0.2s ease;
+}
+
+.kanban-column:hover {
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+.column-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.column-header h3 {
+    margin: 0;
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.column-count {
+    background: var(--color-bg-tertiary);
+    padding: 2px 8px;
+    border-radius: var(--border-radius-full);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.column-tasks {
+    min-height: 100px;
+}
+
+.draggable-task {
+    cursor: grab;
+}
+
+.draggable-task:active {
+    cursor: grabbing;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .kanban-column {
+        flex: 0 0 85vw;
+        min-width: 85vw;
+    }
+}

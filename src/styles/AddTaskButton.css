@@ -1,0 +1,25 @@
+.add-task-btn {
+    position: fixed;
+    bottom: var(--spacing-xl);
+    right: var(--spacing-xl);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-accent-primary), #ffeb3b);
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.add-task-btn:hover {
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6);
+}
+
+/* Unused legacy class removed, targeting icon component directly */
+.add-task-btn .icon {
+    color: var(--color-bg-primary);
+}
