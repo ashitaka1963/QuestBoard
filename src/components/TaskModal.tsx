@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { CalendarPicker } from './CalendarPicker';
 import type { Task, Priority, Status } from '../types';
 import { useTasks } from '../context/TaskContext';
@@ -24,6 +24,17 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, editingTa
     // New category state
     const [isCreatingCategory, setIsCreatingCategory] = useState(false);
     const [newCategoryName, setNewCategoryName] = useState('');
+
+    const titleInputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (isOpen && !editingTask && titleInputRef.current) {
+            // Small timeout to ensure DOM is ready and animation started
+            setTimeout(() => {
+                titleInputRef.current?.focus();
+            }, 50);
+        }
+    }, [isOpen, editingTask]);
 
     useEffect(() => {
         if (editingTask) {
@@ -131,6 +142,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, editingTa
                     <div className="form-group">
                         <label htmlFor="title">タイトル *</label>
                         <input
+                            ref={titleInputRef}
                             id="title"
                             type="text"
                             value={title}
