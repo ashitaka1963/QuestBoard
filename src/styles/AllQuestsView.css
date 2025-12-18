@@ -213,3 +213,44 @@
     background: rgba(255, 255, 255, 0.05);
     color: var(--color-text-primary);
 }
+
+/* Drag and Drop Styles */
+.draggable-task-wrapper {
+    cursor: grab;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.draggable-task-wrapper:active {
+    cursor: grabbing;
+}
+
+.draggable-task-wrapper.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
+.category-section {
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    border-radius: var(--border-radius-lg);
+}
+
+.category-section.drag-over {
+    background: rgba(var(--color-accent-primary-rgb), 0.1);
+    border-color: var(--color-accent-primary);
+    box-shadow: 0 0 15px rgba(var(--color-accent-primary-rgb), 0.2);
+}
+
+.category-section.drag-over .category-header-title {
+    color: var(--color-accent-primary);
+    transform: scale(1.02);
+}
+
+.empty-category-message {
+    transition: color 0.2s ease;
+}
+
+.category-section.drag-over .empty-category-message {
+    color: var(--color-accent-primary);
+    font-weight: bold;
+}

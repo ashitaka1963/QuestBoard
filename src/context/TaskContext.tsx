@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { Task, Category, Status } from '../types';
+import { useGame } from './GameContext';
 
 interface TaskContextType {
     tasks: Task[];
@@ -33,6 +34,8 @@ const INITIAL_CATEGORIES: Category[] = [
 ];
 
 export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const { incrementQuestCount, decrementQuestCount } = useGame();
+
     const [tasks, setTasks] = useState<Task[]>(() => {
         const saved = localStorage.getItem('questboard_tasks');
         return saved ? JSON.parse(saved) : [];
@@ -72,7 +75,17 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updateTask(taskId, { categoryId });
     };
 
+
+
     const toggleTaskStatus = (taskId: string, status: Status) => {
+        const task = tasks.find(t => t.id === taskId);
+        if (task) {
+            if (task.status !== 'done' && status === 'done') {
+                incrementQuestCount();
+            } else if (task.status === 'done' && status !== 'done') {
+                decrementQuestCount();
+            }
+        }
         updateTask(taskId, { status });
     };
 

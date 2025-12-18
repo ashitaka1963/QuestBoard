@@ -12,8 +12,10 @@ interface AllQuestsViewProps {
 }
 
 export const AllQuestsView: React.FC<AllQuestsViewProps> = ({ onEditTask, onAddTask, onTaskContextMenu }) => {
-    const { tasks, categories, deleteCategory } = useTasks();
+    const { tasks, categories, deleteCategory, updateTask } = useTasks();
     const [showEmpty, setShowEmpty] = React.useState(false);
+    const [draggedTaskId, setDraggedTaskId] = React.useState<string | null>(null);
+    const [dragOverCategoryId, setDragOverCategoryId] = React.useState<string | null>(null);
 
     // Only incomplete tasks
     const incompleteTasks = tasks.filter(task => task.status !== 'done');
@@ -43,6 +45,40 @@ export const AllQuestsView: React.FC<AllQuestsViewProps> = ({ onEditTask, onAddT
         }
     };
 
+    // Drag and Drop Handlers
+    const handleDragStart = (e: React.DragEvent, taskId: string) => {
+        setDraggedTaskId(taskId);
+        e.dataTransfer.effectAllowed = 'move';
+        // Set invisible drag image if desired, or let browser handle it
+    };
+
+    const handleDragOver = (e: React.DragEvent, categoryId: string) => {
+        e.preventDefault(); // Necessary to allow dropping
+        e.dataTransfer.dropEffect = 'move';
+
+        if (dragOverCategoryId !== categoryId) {
+            setDragOverCategoryId(categoryId);
+        }
+    };
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        // Only clear if leaving the drop zone completely, not entering a child
+        // This simple check might flicker, but for now it's okay combined with setDragOverCategoryId
+    };
+
+    const handleDrop = (e: React.DragEvent, targetCategoryId: string) => {
+        e.preventDefault();
+        setDragOverCategoryId(null);
+
+        if (draggedTaskId) {
+            const task = tasks.find(t => t.id === draggedTaskId);
+            if (task && task.categoryId !== targetCategoryId) {
+                updateTask(draggedTaskId, { categoryId: targetCategoryId });
+            }
+        }
+        setDraggedTaskId(null);
+    };
+
     const hasAnyTasks = totalCount > 0;
 
     return (
@@ -70,15 +106,21 @@ export const AllQuestsView: React.FC<AllQuestsViewProps> = ({ onEditTask, onAddT
                     <p className="empty-hint">新しいクエストを追加しましょう！</p>
                 </div>
             ) : (
-                <div className="category-groups">
+                <div className="category-groups" onDragLeave={() => setDragOverCategoryId(null)}>
                     {categories.map(category => {
                         const categoryTasks = incompleteTasks.filter(t => t.categoryId === category.id);
-                        if (categoryTasks.length === 0 && !showEmpty) return null;
+                        if (categoryTasks.length === 0 && !showEmpty && dragOverCategoryId !== category.id) return null;
 
                         const sortedCategoryTasks = sortTasks(categoryTasks);
+                        const isDragOver = dragOverCategoryId === category.id;
 
                         return (
-                            <div key={category.id} className="category-section">
+                            <div
+                                key={category.id}
+                                className={`category-section ${isDragOver ? 'drag-over' : ''}`}
+                                onDragOver={(e) => handleDragOver(e, category.id)}
+                                onDrop={(e) => handleDrop(e, category.id)}
+                            >
                                 <h3 className={`category-header-title category-text-${category.id}`}>
                                     {category.name}
                                     <span className="category-count">{categoryTasks.length}</span>
@@ -95,17 +137,23 @@ export const AllQuestsView: React.FC<AllQuestsViewProps> = ({ onEditTask, onAddT
                                 <div className="quests-list">
                                     {categoryTasks.length > 0 ? (
                                         sortedCategoryTasks.map(task => (
-                                            <TaskCard
+                                            <div
                                                 key={task.id}
-                                                task={task}
-                                                onEdit={onEditTask}
-                                                onContextMenu={onTaskContextMenu}
-                                            // categoryName is redundant here as it's grouped by category header
-                                            />
+                                                draggable
+                                                onDragStart={(e) => handleDragStart(e, task.id)}
+                                                className={`draggable-task-wrapper ${draggedTaskId === task.id ? 'dragging' : ''}`}
+                                            >
+                                                <TaskCard
+                                                    task={task}
+                                                    onEdit={onEditTask}
+                                                    onContextMenu={onTaskContextMenu}
+                                                // categoryName is redundant here as it's grouped by category header
+                                                />
+                                            </div>
                                         ))
                                     ) : (
                                         <div className="empty-category-message">
-                                            クエストはありません
+                                            {isDragOver ? 'ここへ移動' : 'クエストはありません'}
                                         </div>
                                     )}
                                 </div>
@@ -136,6 +184,7 @@ export const AllQuestsView: React.FC<AllQuestsViewProps> = ({ onEditTask, onAddT
                                         key={task.id}
                                         task={task}
                                         onEdit={onEditTask}
+                                        onContextMenu={onTaskContextMenu}
                                     />
                                 ))}
                             </div>

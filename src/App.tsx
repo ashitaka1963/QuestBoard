@@ -8,12 +8,15 @@ import { AllQuestsView } from './components/AllQuestsView';
 import { TaskModal } from './components/TaskModal';
 import { AddTaskButton } from './components/AddTaskButton';
 import { TaskContextMenu } from './components/TaskContextMenu';
+import { DashboardView } from './components/DashboardView';
+import { AchievementsView } from './components/AchievementsView';
 import type { Task } from './types';
 import './App.css';
 
 const TABS = [
   { id: 'today', label: '受注クエスト', icon: '⚔️' },
   { id: 'all', label: 'クエスト一覧', icon: '📜' },
+  { id: 'profile', label: '冒険の記録', icon: '🏆' },
 ];
 
 interface MenuState {
@@ -112,6 +115,13 @@ function AppContent() {
           onAddTask={handleOpenNewTask}
           onTaskContextMenu={handleContextMenu}
         />
+      )}
+
+      {activeTab === 'profile' && (
+        <div className="profile-view-container" style={{ padding: '0 16px' }}>
+          <DashboardView />
+          <AchievementsView />
+        </div>
       )}
 
       <AddTaskButton onClick={() => handleOpenNewTask()} />

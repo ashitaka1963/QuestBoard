@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { Task } from '../types';
 import { useGame } from '../context/GameContext';
 import { useTasks } from '../context/TaskContext';
@@ -15,6 +15,7 @@ interface TaskCardProps {
 export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, categoryName, onContextMenu }) => {
     const { addXp, removeXp } = useGame();
     const { toggleTaskStatus, deleteTask } = useTasks();
+    const [showStamp, setShowStamp] = useState(false);
 
     const handleToggleComplete = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -23,9 +24,17 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, categoryName, 
             toggleTaskStatus(task.id, 'todo');
             removeXp(task.xp);
         } else {
-            // Mark as complete - award XP
-            toggleTaskStatus(task.id, 'done');
-            addXp(task.xp);
+            // Show stamp animation first
+            setShowStamp(true);
+
+            // Hide stamp after animation
+            setTimeout(() => setShowStamp(false), 1000);
+
+            // Delay status update to allow animation to play before task is filtered out
+            setTimeout(() => {
+                toggleTaskStatus(task.id, 'done');
+                addXp(task.xp);
+            }, 600);
         }
     };
 
@@ -120,6 +129,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, categoryName, 
                     <DeleteIcon size={16} />
                 </button>
             </div>
+            {showStamp && (
+                <div className="completion-stamp">
+                    <div className="stamp-content">完了</div>
+                </div>
+            )}
         </div>
     );
 };

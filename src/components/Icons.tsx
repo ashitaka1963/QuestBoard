@@ -100,3 +100,11 @@ export const InboxIcon: React.FC<{ size?: number }> = ({ size = 16 }) => (
         <path d="M5.45 5.11L2 12V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V12L18.55 5.11C18.21 4.43 17.52 4 16.76 4H7.24C6.48 4 5.79 4.43 5.45 5.11Z" stroke="currentColor" strokeWidth="2" />
     </svg>
 );
+
+// Flame icon for motivation/streak
+export const FlameIcon: React.FC<{ size?: number }> = ({ size = 20 }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className="icon icon-flame">
+        <path d="M12 23C16.4183 23 20 19.4183 20 15C20 10 16 8 16 8C16 8 17.5 11 16 13C16 13 18.5 10 14 5C14 5 15.5 8 13 9.5C13 9.5 14.5 9 13 7C13 7 9.5 10 9.5 13C9.5 14.5 11 15 11 15C11 15 8 15 8 17C8 20.3137 10.6863 23 12 23Z" fill="currentColor" />
+        <path d="M12 19C13.1046 19 14 18.1046 14 17C14 15.8954 13.1046 15 12 15C10.8954 15 10 15.8954 10 17C10 18.1046 10.8954 19 12 19Z" fill="currentColor" style={{ mixBlendMode: 'screen', opacity: 0.5 }} />
+    </svg>
+);
