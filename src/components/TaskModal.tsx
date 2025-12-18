@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { CalendarPicker } from './CalendarPicker';
 import type { Task, Priority, Status } from '../types';
 import { useTasks } from '../context/TaskContext';
 import '../styles/TaskModal.css';
@@ -153,12 +154,11 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, editingTa
                     <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="dueDate">期限</label>
+
                             <div className="date-input-wrapper">
-                                <input
-                                    id="dueDate"
-                                    type="date"
+                                <CalendarPicker
                                     value={dueDate}
-                                    onChange={(e) => setDueDate(e.target.value)}
+                                    onChange={setDueDate}
                                 />
                                 {dueDate && (
                                     <button
@@ -166,6 +166,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, editingTa
                                         className="clear-date-btn"
                                         onClick={clearDate}
                                         aria-label="Clear date"
+                                        style={{ position: 'absolute', right: '40px', top: '50%', transform: 'translateY(-50%)', zIndex: 10 }}
                                     >
                                         ✕
                                     </button>
