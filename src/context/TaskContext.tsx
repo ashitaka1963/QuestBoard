@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { Task, Category, Status } from '../types';
 import { useGame } from './GameContext';
+import { useAuth } from './AuthContext';
+import { storage } from '../services';
 
 interface TaskContextType {
     tasks: Task[];
@@ -13,6 +15,7 @@ interface TaskContextType {
     reorderTasks: (taskIds: string[]) => void;
     addCategory: (name: string) => string;
     deleteCategory: (categoryId: string) => void;
+    isLoading: boolean;
 }
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -35,24 +38,50 @@ const INITIAL_CATEGORIES: Category[] = [
 
 export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { incrementQuestCount, decrementQuestCount } = useGame();
+    const { user } = useAuth();
 
-    const [tasks, setTasks] = useState<Task[]>(() => {
-        const saved = localStorage.getItem('questboard_tasks');
-        return saved ? JSON.parse(saved) : [];
-    });
+    const [tasks, setTasks] = useState<Task[]>([]);
+    const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const [categories, setCategories] = useState<Category[]>(() => {
-        const saved = localStorage.getItem('questboard_categories');
-        return saved ? JSON.parse(saved) : INITIAL_CATEGORIES;
-    });
+    // Initial load
+    useEffect(() => {
+        const loadData = async () => {
+            setIsLoading(true);
+            try {
+                const [loadedTasks, loadedCategories] = await Promise.all([
+                    storage.getTasks(),
+                    storage.getCategories()
+                ]);
+
+                setTasks(loadedTasks || []);
+                if (loadedCategories && loadedCategories.length > 0) {
+                    setCategories(loadedCategories);
+                } else {
+                    setCategories(INITIAL_CATEGORIES);
+                }
+            } catch (error) {
+                console.error('Failed to load tasks/categories:', error);
+                setCategories(INITIAL_CATEGORIES);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadData();
+    }, [user]);
+
+    // Save on changes
+    useEffect(() => {
+        if (!isLoading) {
+            storage.saveTasks(tasks);
+        }
+    }, [tasks, isLoading]);
 
     useEffect(() => {
-        localStorage.setItem('questboard_tasks', JSON.stringify(tasks));
-    }, [tasks]);
-
-    useEffect(() => {
-        localStorage.setItem('questboard_categories', JSON.stringify(categories));
-    }, [categories]);
+        if (!isLoading) {
+            storage.saveCategories(categories);
+        }
+    }, [categories, isLoading]);
 
     const addTask = (taskData: Omit<Task, 'id' | 'createdAt'>) => {
         const newTask: Task = {
@@ -75,8 +104,6 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updateTask(taskId, { categoryId });
     };
 
-
-
     const toggleTaskStatus = (taskId: string, status: Status) => {
         const task = tasks.find(t => t.id === taskId);
         if (task) {
@@ -91,13 +118,10 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const reorderTasks = (taskIds: string[]) => {
         setTasks(prev => {
-            // Create a map for quick lookup
             const taskMap = new Map(prev.map(t => [t.id, t]));
-            // Build new array with reordered tasks first, then others
             const reorderedTasks: Task[] = [];
             const otherTasks: Task[] = [];
 
-            // Add tasks in the new order
             taskIds.forEach(id => {
                 const task = taskMap.get(id);
                 if (task) {
@@ -106,7 +130,6 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 }
             });
 
-            // Add remaining tasks
             prev.forEach(t => {
                 if (taskMap.has(t.id)) {
                     otherTasks.push(t);
@@ -139,7 +162,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <TaskContext.Provider value={{ tasks, categories, addTask, updateTask, deleteTask, moveTask, toggleTaskStatus, reorderTasks, addCategory, deleteCategory }}>
+        <TaskContext.Provider value={{ tasks, categories, addTask, updateTask, deleteTask, moveTask, toggleTaskStatus, reorderTasks, addCategory, deleteCategory, isLoading }}>
             {children}
         </TaskContext.Provider>
     );

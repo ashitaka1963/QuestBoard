@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { GameProvider } from './context/GameContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { GameProvider, useGame } from './context/GameContext';
 import { TaskProvider, useTasks } from './context/TaskContext';
 import { Layout } from './components/Layout';
 import { TabNavigation } from './components/TabNavigation';
@@ -10,6 +11,7 @@ import { AddTaskButton } from './components/AddTaskButton';
 import { TaskContextMenu } from './components/TaskContextMenu';
 import { DashboardView } from './components/DashboardView';
 import { AchievementsView } from './components/AchievementsView';
+import { AuthModal } from './components/AuthModal';
 import type { Task } from './types';
 import './App.css';
 
@@ -26,9 +28,13 @@ interface MenuState {
 }
 
 function AppContent() {
-  const { updateTask } = useTasks();
+  const { updateTask, isLoading: tasksLoading } = useTasks();
+  const { isLoading: gameLoading } = useGame();
+  const { isLoading: authLoading } = useAuth();
+
   const [activeTab, setActiveTab] = useState('today');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [targetCategoryId, setTargetCategoryId] = useState<string | undefined>(undefined);
   const [menuState, setMenuState] = useState<MenuState | null>(null);
@@ -70,7 +76,6 @@ function AppContent() {
     if (!menuState) return;
 
     const now = new Date();
-    // Helper to format YYYY-MM-DD
     const formatDate = (date: Date) => {
       const y = date.getFullYear();
       const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -79,7 +84,6 @@ function AppContent() {
     };
 
     let newDateStr = '';
-
     if (dateType === 'today') {
       newDateStr = formatDate(now);
     } else if (dateType === 'tomorrow') {
@@ -94,8 +98,17 @@ function AppContent() {
     handleCloseMenu();
   };
 
+  const isLoading = authLoading || tasksLoading || gameLoading;
+
   return (
-    <Layout>
+    <Layout onLoginClick={() => setIsAuthModalOpen(true)}>
+      {isLoading && (
+        <div className="loading-overlay">
+          <div className="spinner"></div>
+          <p>読み込み中...</p>
+        </div>
+      )}
+
       <TabNavigation
         tabs={TABS}
         activeTab={activeTab}
@@ -133,6 +146,11 @@ function AppContent() {
         initialCategoryId={targetCategoryId}
       />
 
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
+
       {menuState && (
         <TaskContextMenu
           x={menuState.x}
@@ -147,11 +165,13 @@ function AppContent() {
 
 function App() {
   return (
-    <GameProvider>
-      <TaskProvider>
-        <AppContent />
-      </TaskProvider>
-    </GameProvider>
+    <AuthProvider>
+      <GameProvider>
+        <TaskProvider>
+          <AppContent />
+        </TaskProvider>
+      </GameProvider>
+    </AuthProvider>
   );
 }
 

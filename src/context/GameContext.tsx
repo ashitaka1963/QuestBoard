@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import type { UserStats, Achievement } from '../types';
+import { storage } from '../services';
 
 export const ACHIEVEMENTS: Achievement[] = [
     { id: 'first_blood', title: '冒険の始まり', description: '初めてクエストを完了する', icon: '🔰', requirement: 1, type: 'quest_count' },
@@ -16,8 +17,9 @@ interface GameContextType {
     removeXp: (amount: number) => void;
     incrementQuestCount: () => void;
     decrementQuestCount: () => void;
-    recentUnlocks: Achievement[]; // For notifications
+    recentUnlocks: Achievement[];
     clearRecentUnlocks: () => void;
+    isLoading: boolean;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -39,28 +41,45 @@ const INITIAL_STATS: UserStats = {
     unlockedAchievements: [],
 };
 
-export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [stats, setStats] = useState<UserStats>(() => {
-        const saved = localStorage.getItem('questboard_stats');
-        if (saved) {
-            const parsed = JSON.parse(saved);
-            // Migration for old data
-            return {
-                ...INITIAL_STATS,
-                ...parsed,
-                // Ensure array exists
-                unlockedAchievements: Array.isArray(parsed.unlockedAchievements) ? parsed.unlockedAchievements : [],
-                questsCompleted: typeof parsed.questsCompleted === 'number' ? parsed.questsCompleted : 0
-            };
-        }
-        return INITIAL_STATS;
-    });
+import { useAuth } from './AuthContext';
 
+export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const { user } = useAuth();
+    const [stats, setStats] = useState<UserStats>(INITIAL_STATS);
+    const [isLoading, setIsLoading] = useState(true);
     const [recentUnlocks, setRecentUnlocks] = useState<Achievement[]>([]);
 
+    // Load data
     useEffect(() => {
-        localStorage.setItem('questboard_stats', JSON.stringify(stats));
-    }, [stats]);
+        const loadStats = async () => {
+            setIsLoading(true);
+            try {
+                const loadedStats = await storage.getStats();
+                if (loadedStats) {
+                    setStats({
+                        ...INITIAL_STATS,
+                        ...loadedStats,
+                        unlockedAchievements: Array.isArray(loadedStats.unlockedAchievements) ? loadedStats.unlockedAchievements : [],
+                        questsCompleted: typeof loadedStats.questsCompleted === 'number' ? loadedStats.questsCompleted : 0
+                    });
+                } else {
+                    setStats(INITIAL_STATS);
+                }
+            } catch (error) {
+                console.error('Failed to load stats:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadStats();
+    }, [user]);
+
+    // Save data
+    useEffect(() => {
+        if (!isLoading) {
+            storage.saveStats(stats);
+        }
+    }, [stats, isLoading]);
 
     const calculateNextLevelXp = (level: number) => {
         return Math.floor(100 * (level * 1.2));
@@ -100,14 +119,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
             currentXp += amount;
             totalXpEarned += amount;
 
-            // Level up logic
             while (currentXp >= nextLevelXp) {
                 currentXp -= nextLevelXp;
                 level += 1;
                 nextLevelXp = calculateNextLevelXp(level);
             }
 
-            // Check level achievements
             const newStats = { level, currentXp, nextLevelXp, totalXpEarned, questsCompleted, unlockedAchievements };
             const newUnlocks = checkAchievements(newStats);
 
@@ -127,7 +144,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
             currentXp -= amount;
             totalXpEarned = Math.max(0, totalXpEarned - amount);
 
-            // Level down logic
             while (currentXp < 0 && level > 1) {
                 level -= 1;
                 const prevLevelXp = calculatePrevLevelXp(level);
@@ -170,7 +186,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <GameContext.Provider value={{ stats, addXp, removeXp, incrementQuestCount, decrementQuestCount, recentUnlocks, clearRecentUnlocks }}>
+        <GameContext.Provider value={{ stats, addXp, removeXp, incrementQuestCount, decrementQuestCount, recentUnlocks, clearRecentUnlocks, isLoading }}>
             {children}
         </GameContext.Provider>
     );

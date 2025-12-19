@@ -61,10 +61,6 @@ export const AllQuestsView: React.FC<AllQuestsViewProps> = ({ onEditTask, onAddT
         }
     };
 
-    const handleDragLeave = (e: React.DragEvent) => {
-        // Only clear if leaving the drop zone completely, not entering a child
-        // This simple check might flicker, but for now it's okay combined with setDragOverCategoryId
-    };
 
     const handleDrop = (e: React.DragEvent, targetCategoryId: string) => {
         e.preventDefault();
