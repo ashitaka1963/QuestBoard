@@ -37,6 +37,7 @@ function AppContent() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [targetCategoryId, setTargetCategoryId] = useState<string | undefined>(undefined);
+  const [targetDueDate, setTargetDueDate] = useState<string | undefined>(undefined);
   const [menuState, setMenuState] = useState<MenuState | null>(null);
 
   const handleEditTask = (task: Task) => {
@@ -50,11 +51,13 @@ function AppContent() {
     setIsModalOpen(false);
     setEditingTask(null);
     setTargetCategoryId(undefined);
+    setTargetDueDate(undefined);
   };
 
-  const handleOpenNewTask = (categoryId?: string) => {
+  const handleOpenNewTask = (categoryId?: string, dueDate?: string) => {
     setEditingTask(null);
     setTargetCategoryId(typeof categoryId === 'string' ? categoryId : undefined);
+    setTargetDueDate(dueDate);
     setIsModalOpen(true);
     setMenuState(null);
   };
@@ -137,13 +140,24 @@ function AppContent() {
         </div>
       )}
 
-      <AddTaskButton onClick={() => handleOpenNewTask()} />
+      <AddTaskButton onClick={() => {
+        if (activeTab === 'today') {
+          const now = new Date();
+          const y = now.getFullYear();
+          const m = String(now.getMonth() + 1).padStart(2, '0');
+          const d = String(now.getDate()).padStart(2, '0');
+          handleOpenNewTask(undefined, `${y}-${m}-${d}`);
+        } else {
+          handleOpenNewTask();
+        }
+      }} />
 
       <TaskModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         editingTask={editingTask}
         initialCategoryId={targetCategoryId}
+        initialDueDate={targetDueDate}
       />
 
       <AuthModal

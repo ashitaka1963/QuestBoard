@@ -9,9 +9,10 @@ interface TaskModalProps {
     onClose: () => void;
     editingTask?: Task | null;
     initialCategoryId?: string;
+    initialDueDate?: string;
 }
 
-export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, editingTask, initialCategoryId }) => {
+export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, editingTask, initialCategoryId, initialDueDate }) => {
     const { addTask, updateTask, addCategory, categories } = useTasks();
 
     const [title, setTitle] = useState('');
@@ -47,12 +48,12 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, editingTa
         } else {
             resetForm();
         }
-    }, [editingTask, isOpen, initialCategoryId]);
+    }, [editingTask, isOpen, initialCategoryId, initialDueDate]);
 
     const resetForm = () => {
         setTitle('');
         setDescription('');
-        setDueDate(''); // Default to empty for new tasks
+        setDueDate(initialDueDate || '');
         setPriority('medium');
         setCategoryId(initialCategoryId || 'inbox');
         setXp(10);
