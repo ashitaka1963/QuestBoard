@@ -54,11 +54,6 @@
     border-color: var(--color-accent-primary);
 }
 
-.checkmark {
-    color: var(--color-bg-primary);
-    font-weight: bold;
-}
-
 .task-info {
     flex: 1;
     min-width: 0;
@@ -76,15 +71,13 @@
     background: rgba(255, 255, 255, 0.05);
 }
 
-.task-card-footer {
-    cursor: pointer;
-}
-
 .task-title {
     margin: 0 0 4px 0;
     font-size: var(--font-size-base);
     font-weight: 600;
     color: var(--color-text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .task-description {
@@ -99,7 +92,7 @@
 .priority-indicator {
     width: 4px;
     height: 100%;
-    min-height: 40px;
+    min-height: 48px;
     border-radius: var(--border-radius-full);
     position: absolute;
     right: 0;
@@ -129,6 +122,7 @@
 
 .task-meta {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--spacing-sm);
     align-items: center;
     font-size: var(--font-size-sm);
@@ -147,43 +141,6 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    border: 1px solid transparent;
-}
-
-/* Category Specific Colors */
-.category-work {
-    background: rgba(64, 196, 255, 0.15);
-    color: #40c4ff;
-    border-color: rgba(64, 196, 255, 0.3);
-}
-
-.category-personal {
-    background: rgba(105, 240, 174, 0.15);
-    color: #69f0ae;
-    border-color: rgba(105, 240, 174, 0.3);
-}
-
-.category-health {
-    background: rgba(255, 82, 82, 0.15);
-    color: #ff5252;
-    border-color: rgba(255, 82, 82, 0.3);
-}
-
-.category-learning {
-    background: rgba(255, 215, 64, 0.15);
-    color: #ffd740;
-    border-color: rgba(255, 215, 64, 0.3);
-}
-
-.category-inbox {
-    background: rgba(158, 158, 158, 0.15);
-    color: #bdbdbd;
-    border-color: rgba(158, 158, 158, 0.3);
-}
-
-.category-badge .icon {
-    width: 12px;
-    height: 12px;
 }
 
 .xp-badge {
@@ -192,31 +149,13 @@
     border-radius: var(--border-radius-full);
     font-size: 0.7rem;
     font-weight: bold;
-}
-
-.task-tags {
-    display: flex;
-    gap: 4px;
-}
-
-.tag {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 2px 6px;
-    border-radius: var(--border-radius-sm);
-    font-size: 0.7rem;
-    color: var(--color-text-secondary);
-}
-
-.subtasks-progress {
-    margin-top: var(--spacing-sm);
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
+    color: white;
 }
 
 .task-actions {
     position: absolute;
-    top: var(--spacing-sm);
-    right: var(--spacing-md);
+    top: 8px;
+    right: 12px;
     display: flex;
     gap: 4px;
     opacity: 0;
@@ -228,47 +167,61 @@
 }
 
 .action-btn {
-    padding: 4px;
-    font-size: 0.9rem;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
+    padding: 6px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-text-muted);
 }
 
 .action-btn:hover {
-    opacity: 1;
+    background: rgba(255, 0, 0, 0.1);
+    color: var(--color-danger);
 }
 
-/* Overdue Styling */
+/* Response for touch devices */
+@media (max-width: 768px) {
+    .task-card {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    .task-actions {
+        opacity: 0.6;
+        background: rgba(18, 18, 18, 0.8);
+        border-radius: 8px;
+        padding: 2px;
+    }
+
+    .action-btn {
+        padding: 8px;
+        /* Larger hit area */
+    }
+
+    .checkbox {
+        width: 28px;
+        height: 28px;
+    }
+}
+
 .task-card.overdue {
     border-color: var(--color-danger);
     background: rgba(255, 82, 82, 0.05);
-    /* Light red tint */
 }
 
 .due-date.overdue {
     color: var(--color-danger);
     font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
 }
 
-/* Due Today Styling */
 .task-card.due-today {
     border-color: var(--color-accent-primary);
-    /* Gold/Yellow */
     background: rgba(255, 215, 0, 0.05);
 }
 
 .due-date.due-today {
     color: var(--color-accent-primary);
     font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
 }
 
-/* Completion Stamp Animation */
 .completion-stamp {
     position: absolute;
     top: 50%;
@@ -282,17 +235,13 @@
 .stamp-content {
     background: linear-gradient(135deg, #ff4757, #ff6348);
     color: white;
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 900;
-    padding: 12px 24px;
-    border: 4px solid #ff4757;
+    padding: 8px 16px;
+    border: 3px solid #ff4757;
     border-radius: 8px;
     transform: rotate(-15deg);
-    box-shadow:
-        0 4px 20px rgba(255, 71, 87, 0.4),
-        inset 0 0 10px rgba(255, 255, 255, 0.2);
-    letter-spacing: 4px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px rgba(255, 71, 87, 0.4);
 }
 
 @keyframes stampAppear {
@@ -308,6 +257,32 @@
 
     100% {
         transform: translate(-50%, -50%) scale(1) rotate(-15deg);
-        opacity: 0.9;
+        opacity: 0;
     }
+}
+
+/* Category Specific Colors */
+.category-work {
+    color: #40c4ff;
+    border-color: rgba(64, 196, 255, 0.3);
+}
+
+.category-personal {
+    color: #69f0ae;
+    border-color: rgba(105, 240, 174, 0.3);
+}
+
+.category-health {
+    color: #ff5252;
+    border-color: rgba(255, 82, 82, 0.3);
+}
+
+.category-learning {
+    color: #ffd740;
+    border-color: rgba(255, 215, 64, 0.3);
+}
+
+.category-inbox {
+    color: #bdbdbd;
+    border-color: rgba(158, 158, 158, 0.3);
 }

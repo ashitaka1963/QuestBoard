@@ -15,6 +15,12 @@
     color: var(--color-text-primary);
 }
 
+@media (max-width: 480px) {
+    .section-header h2 {
+        font-size: 1.25rem;
+    }
+}
+
 .task-count {
     background: rgba(255, 215, 0, 0.2);
     color: var(--color-accent-primary);

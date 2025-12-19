@@ -61,14 +61,24 @@
 }
 
 .close-btn {
-    font-size: 1.2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--color-text-muted);
-    padding: var(--spacing-xs);
-    transition: color 0.2s ease;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+    cursor: pointer;
 }
 
 .close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
     color: var(--color-text-primary);
+    transform: rotate(90deg);
 }
 
 form {

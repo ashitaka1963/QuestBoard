@@ -123,3 +123,9 @@ export const LogoutIcon: React.FC<{ size?: number }> = ({ size = 16 }) => (
         <path d="M21 12H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
 );
+// Close/X icon
+export const CloseIcon: React.FC<{ size?: number }> = ({ size = 24 }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className="icon icon-close">
+        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+);

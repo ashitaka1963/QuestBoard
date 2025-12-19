@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { CalendarPicker } from './CalendarPicker';
 import type { Task, Priority, Status } from '../types';
 import { useTasks } from '../context/TaskContext';
+import { CloseIcon } from './Icons';
 import '../styles/TaskModal.css';
 
 interface TaskModalProps {
@@ -136,7 +137,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, editingTa
             <div className="modal-content" onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
                     <h2>{editingTask ? 'タスクを編集' : '新しいクエスト'}</h2>
-                    <button className="close-btn" onClick={onClose}>✕</button>
+                    <button className="close-btn" onClick={onClose} aria-label="閉じる">
+                        <CloseIcon size={18} />
+                    </button>
                 </div>
 
                 <form onSubmit={handleSubmit}>

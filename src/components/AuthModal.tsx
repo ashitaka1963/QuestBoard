@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
+import { CloseIcon } from './Icons';
 import '../styles/AuthModal.css';
 
 interface AuthModalProps {
@@ -41,7 +42,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="auth-modal modal-content" onClick={e => e.stopPropagation()}>
-                <h2>{isLogin ? '冒険者ログイン' : '新規冒険者登録'}</h2>
+                <div className="modal-header">
+                    <h2>{isLogin ? '冒険者ログイン' : '新規冒険者登録'}</h2>
+                    <button className="close-btn" onClick={onClose} aria-label="閉じる">
+                        <CloseIcon size={20} />
+                    </button>
+                </div>
 
                 {error && <div className="error-message">{error}</div>}
 
@@ -79,8 +85,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                         {isLogin ? '新規登録' : 'ログイン'}
                     </button>
                 </div>
-
-                <button className="close-button" onClick={onClose}>×</button>
             </div>
         </div>
     );

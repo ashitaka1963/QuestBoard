@@ -1,14 +1,14 @@
 .xp-container {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 0 12px;
+    gap: 10px;
+    padding: 0 10px;
     background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
+    border-radius: 10px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    height: 48px;
-    /* Consistent height with Profile Badge */
-    width: 200px;
+    height: 42px;
+    width: 220px;
+    max-width: 100%;
 }
 
 .level-badge {
@@ -17,25 +17,22 @@
     align-items: center;
     justify-content: center;
     background: linear-gradient(135deg, var(--color-accent-secondary), var(--color-accent-tertiary));
-    width: 32px;
-    /* Match Avatar size */
-    height: 32px;
-    border-radius: 8px;
-    /* Match Avatar shape */
-    box-shadow: 0 4px 10px rgba(156, 39, 176, 0.3);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    box-shadow: 0 4px 10px rgba(156, 39, 176, 0.2);
     flex-shrink: 0;
 }
 
 .level-label {
-    font-size: 0.5rem;
+    font-size: 0.45rem;
     font-weight: 800;
-    color: rgba(255, 255, 255, 0.9);
-    text-transform: uppercase;
+    color: white;
     line-height: 1;
 }
 
 .level-value {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 900;
     color: white;
     line-height: 1;
@@ -45,28 +42,46 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
+    min-width: 0;
 }
 
 .xp-text {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     color: rgba(255, 255, 255, 0.5);
     text-align: right;
     font-weight: 600;
-    letter-spacing: 0.5px;
-    line-height: 1;
+    white-space: nowrap;
 }
 
 .progress-bar-bg {
-    height: 6px;
+    height: 4px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
+    border-radius: 2px;
     overflow: hidden;
 }
 
 .progress-bar-fill {
     height: 100%;
     background: linear-gradient(90deg, #9c27b0, #00bcd4);
-    box-shadow: 0 0 12px rgba(0, 188, 212, 0.4);
     transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@media (max-width: 768px) {
+    .xp-container {
+        width: 160px;
+        padding: 0 8px;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .xp-container {
+        width: 130px;
+    }
+
+    .xp-text {
+        display: none;
+        /* Hide text on very small screens to save space */
+    }
 }

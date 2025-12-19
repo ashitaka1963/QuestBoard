@@ -11,3 +11,15 @@
     margin: 0 auto;
     width: 100%;
 }
+
+@media (max-width: 768px) {
+    .app-main {
+        padding: var(--spacing-md);
+    }
+}
+
+@media (max-width: 480px) {
+    .app-main {
+        padding: var(--spacing-sm);
+    }
+}
