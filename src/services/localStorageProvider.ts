@@ -15,6 +15,10 @@ export class LocalStorageProvider implements StorageProvider {
         localStorage.setItem(this.TASKS_KEY, JSON.stringify(tasks));
     }
 
+    async deleteTask(_id: string): Promise<void> {
+        // Handled by saveTasks(tasks) in TaskContext
+    }
+
     async getCategories(): Promise<Category[]> {
         const saved = localStorage.getItem(this.CATEGORIES_KEY);
         return saved ? JSON.parse(saved) : [];
@@ -22,6 +26,10 @@ export class LocalStorageProvider implements StorageProvider {
 
     async saveCategories(categories: Category[]): Promise<void> {
         localStorage.setItem(this.CATEGORIES_KEY, JSON.stringify(categories));
+    }
+
+    async deleteCategory(_id: string): Promise<void> {
+        // Handled by saveCategories(categories) in TaskContext
     }
 
     async getStats(): Promise<UserStats | null> {

@@ -72,15 +72,29 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Save on changes
     useEffect(() => {
-        if (!isLoading) {
-            storage.saveTasks(tasks);
-        }
+        const save = async () => {
+            if (!isLoading) {
+                try {
+                    await storage.saveTasks(tasks);
+                } catch (error) {
+                    console.error('Failed to save tasks:', error);
+                }
+            }
+        };
+        save();
     }, [tasks, isLoading]);
 
     useEffect(() => {
-        if (!isLoading) {
-            storage.saveCategories(categories);
-        }
+        const save = async () => {
+            if (!isLoading) {
+                try {
+                    await storage.saveCategories(categories);
+                } catch (error) {
+                    console.error('Failed to save categories:', error);
+                }
+            }
+        };
+        save();
     }, [categories, isLoading]);
 
     const addTask = (taskData: Omit<Task, 'id' | 'createdAt'>) => {
@@ -96,8 +110,14 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setTasks(prev => prev.map(t => t.id === id ? { ...t, ...updates } : t));
     };
 
-    const deleteTask = (id: string) => {
-        setTasks(prev => prev.filter(t => t.id !== id));
+    const deleteTask = async (id: string) => {
+        try {
+            setTasks(prev => prev.filter(t => t.id !== id));
+            await storage.deleteTask(id);
+        } catch (error) {
+            console.error('Failed to delete task:', error);
+            // Optionally: notify user or reload to sync
+        }
     };
 
     const moveTask = (taskId: string, categoryId: string) => {
@@ -151,14 +171,19 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return newId;
     };
 
-    const deleteCategory = (categoryId: string) => {
+    const deleteCategory = async (categoryId: string) => {
         const category = categories.find(c => c.id === categoryId);
         if (category?.type === 'system') return;
 
-        setTasks(prev => prev.map(t =>
-            t.categoryId === categoryId ? { ...t, categoryId: 'inbox' } : t
-        ));
-        setCategories(prev => prev.filter(c => c.id !== categoryId));
+        try {
+            setTasks(prev => prev.map(t =>
+                t.categoryId === categoryId ? { ...t, categoryId: 'inbox' } : t
+            ));
+            setCategories(prev => prev.filter(c => c.id !== categoryId));
+            await storage.deleteCategory(categoryId);
+        } catch (error) {
+            console.error('Failed to delete category:', error);
+        }
     };
 
     return (

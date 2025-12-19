@@ -50,7 +50,7 @@ export class SupabaseProvider implements StorageProvider {
                 user_id: userId,
                 title: t.title,
                 description: t.description,
-                due_date: t.dueDate || null, // Convert empty string to null
+                due_date: t.dueDate || null,
                 priority: t.priority,
                 status: t.status,
                 xp: t.xp,
@@ -58,10 +58,29 @@ export class SupabaseProvider implements StorageProvider {
                 tags: t.tags,
                 subtasks: t.subtasks,
                 created_at: t.createdAt,
-                completed_at: t.completedAt || null // Also convert empty string to null
+                completed_at: t.completedAt || null
             })));
 
-        if (error) console.error('Error saving tasks to Supabase:', error);
+        if (error) {
+            console.error('Error saving tasks to Supabase:', error);
+            throw error;
+        }
+    }
+
+    async deleteTask(id: string): Promise<void> {
+        const userId = await this.getUserId();
+        if (!userId) return;
+
+        const { error } = await supabase
+            .from('tasks')
+            .delete()
+            .eq('id', id)
+            .eq('user_id', userId);
+
+        if (error) {
+            console.error('Error deleting task from Supabase:', error);
+            throw error;
+        }
     }
 
     async getCategories(): Promise<Category[]> {
@@ -93,7 +112,26 @@ export class SupabaseProvider implements StorageProvider {
                 user_id: userId
             })));
 
-        if (error) console.error('Error saving categories to Supabase:', error);
+        if (error) {
+            console.error('Error saving categories to Supabase:', error);
+            throw error;
+        }
+    }
+
+    async deleteCategory(id: string): Promise<void> {
+        const userId = await this.getUserId();
+        if (!userId) return;
+
+        const { error } = await supabase
+            .from('categories')
+            .delete()
+            .eq('id', id)
+            .eq('user_id', userId);
+
+        if (error) {
+            console.error('Error deleting category from Supabase:', error);
+            throw error;
+        }
     }
 
     async getStats(): Promise<UserStats | null> {

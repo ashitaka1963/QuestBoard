@@ -1,14 +1,14 @@
 .xp-container {
     display: flex;
     align-items: center;
-    gap: var(--spacing-md);
-    padding: var(--spacing-sm);
+    gap: 12px;
+    padding: 0 12px;
     background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--border-radius-lg);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--border-color);
-    width: 100%;
-    max-width: 400px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    height: 48px;
+    /* Consistent height with Profile Badge */
+    width: 200px;
 }
 
 .level-badge {
@@ -17,24 +17,27 @@
     align-items: center;
     justify-content: center;
     background: linear-gradient(135deg, var(--color-accent-secondary), var(--color-accent-tertiary));
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 0 10px rgba(156, 39, 176, 0.5);
-    animation: pulse-glow 2s infinite;
+    width: 32px;
+    /* Match Avatar size */
+    height: 32px;
+    border-radius: 8px;
+    /* Match Avatar shape */
+    box-shadow: 0 4px 10px rgba(156, 39, 176, 0.3);
+    flex-shrink: 0;
 }
 
 .level-label {
-    font-size: 0.6rem;
-    font-weight: bold;
-    opacity: 0.9;
+    font-size: 0.5rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.9);
     text-transform: uppercase;
+    line-height: 1;
 }
 
 .level-value {
-    font-size: 1.2rem;
-    font-weight: 800;
+    font-size: 1rem;
+    font-weight: 900;
+    color: white;
     line-height: 1;
 }
 
@@ -46,38 +49,24 @@
 }
 
 .xp-text {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-secondary);
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.5);
     text-align: right;
-    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    line-height: 1;
 }
 
 .progress-bar-bg {
-    height: 8px;
+    height: 6px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-full);
+    border-radius: 3px;
     overflow: hidden;
-    position: relative;
 }
 
 .progress-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--color-accent-secondary), var(--color-accent-tertiary));
-    border-radius: var(--border-radius-full);
-    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
-}
-
-@keyframes pulse-glow {
-    0% {
-        box-shadow: 0 0 5px rgba(156, 39, 176, 0.5);
-    }
-
-    50% {
-        box-shadow: 0 0 15px rgba(156, 39, 176, 0.8);
-    }
-
-    100% {
-        box-shadow: 0 0 5px rgba(156, 39, 176, 0.5);
-    }
+    background: linear-gradient(90deg, #9c27b0, #00bcd4);
+    box-shadow: 0 0 12px rgba(0, 188, 212, 0.4);
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }

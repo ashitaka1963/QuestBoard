@@ -12,6 +12,7 @@ import { TaskContextMenu } from './components/TaskContextMenu';
 import { DashboardView } from './components/DashboardView';
 import { AchievementsView } from './components/AchievementsView';
 import { AuthModal } from './components/AuthModal';
+import { LandingPage } from './components/LandingPage';
 import type { Task } from './types';
 import './App.css';
 
@@ -30,7 +31,7 @@ interface MenuState {
 function AppContent() {
   const { updateTask, isLoading: tasksLoading } = useTasks();
   const { isLoading: gameLoading } = useGame();
-  const { isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
 
   const [activeTab, setActiveTab] = useState('today');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -101,7 +102,20 @@ function AppContent() {
     handleCloseMenu();
   };
 
-  const isLoading = authLoading || tasksLoading || gameLoading;
+  if (authLoading) {
+    return (
+      <div className="loading-overlay full-screen">
+        <div className="spinner"></div>
+        <p>冒険の準備中...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <LandingPage />;
+  }
+
+  const isLoading = tasksLoading || gameLoading;
 
   return (
     <Layout onLoginClick={() => setIsAuthModalOpen(true)}>
